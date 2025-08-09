@@ -104,5 +104,21 @@ from customers c join orders o
 on o.customer_id=c.customer_id
 group by c.city
 order by order_ Desc;
+---Average Order Value per Customer
+SELECT c.customer_name,round(sum(oi.quantity*price)/count(distinct o.order_id) ,2) as avg_order_value from 
+customers c join orders o
+on c.customer_id = o.customer_id
+join order_items oi
+on o.order_id =oi.order_id
+join products p
+on p.product_id = oi.product_id
+group by c.customer_id;
+----Best-selling Product
+SELECT p.product_name ,sum(oi.quantity) as total_quantity from 
+order_items oi join products p  
+on p.product_id = oi.product_id
+group by p.product_name
+order by total_quantity Desc
+limit 1;
 
 
