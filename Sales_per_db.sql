@@ -60,4 +60,49 @@ INSERT INTO order_items (item_id, order_id, product_id, quantity) VALUES
 (14, 1010, 101, 1),   
 (15, 1010, 102, 1),   
 (16, 1010, 104, 1);   
+--Total Quantity per Customer
+SELECT c.customer_name,
+       SUM(oi.quantity) AS total_quantity
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+GROUP BY c.customer_name;
+--- Most Expensive Product Ordered
+SELECT p.product_name,
+       p.price
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+ORDER BY p.price DESC
+LIMIT 1;
+----Orders with Total Order Value
+SELECT o.order_id,
+       c.customer_name,
+       SUM(oi.quantity * p.price) AS total_order_value
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY o.order_id, c.customer_name;
+----Top 3 Customers by Order Value
+SELECT c.customer_name,
+       SUM(oi.quantity * p.price) AS total_spent
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY c.customer_name
+ORDER BY total_spent DESC
+LIMIT 3;
+-----Products Never Ordered
+SELECT p.product_name
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.product_id IS NULL;
+---city wise order count
+SELECT c.city,count(*) as order_
+from customers c join orders o
+on o.customer_id=c.customer_id
+group by c.city
+order by order_ Desc;
+
 
