@@ -120,5 +120,33 @@ on p.product_id = oi.product_id
 group by p.product_name
 order by total_quantity Desc
 limit 1;
-
-
+----Orders with More Than 2 Different Products List all orders that contain more than two distinct products.
+SELECT o.order_id ,count(distinct oi.product_id) as distinct_product from 
+order_items oi 
+join orders o
+on oi.order_id=o.order_id
+Group by o.order_id
+Having distinct_product >2;
+-----: Month-wise Order Count,
+SELECT month(order_date) as order_month,count(distinct order_id)  as total_orders from orders
+group by month(order_date)
+order by order_month;
+---- Highest Spending City
+SELECT c.city ,sum(p.price * oi.quantity) as spent FROM 
+order_items oi join orders o
+on oi.order_id =o.order_id
+join products p
+on p.product_id =oi.product_id
+join customers c
+on o.customer_id = c.customer_id
+group by c.city
+order by spent  Desc
+limit 1;
+-----Customers Who Ordered All Products
+SELECT c.customer_id, c.customer_name
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.order_id
+JOIN products p ON p.product_id = oi.product_id
+JOIN customers c ON o.customer_id = c.customer_id
+GROUP BY c.customer_id, c.customer_name
+HAVING COUNT(DISTINCT p.product_id) = (SELECT COUNT(*) FROM products);
